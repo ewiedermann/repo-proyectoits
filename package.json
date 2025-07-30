@@ -2,17 +2,26 @@
   "name": "dinodevs",
   "version": "1.0.0",
   "main": "index.js",
- "scripts": {
-  "start": "concurrently \"npm run start:backend\" \"npm run dev --prefix frontend\"",
-  "start:backend": "cd backend && npm run start",
-  "start:frontend": "cd frontend && npm run dev",
-  "dev": "vite"
-},
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run dev --prefix frontend\"",
+    "start:backend": "cd backend && npm run start",
+    "start:frontend": "cd frontend && npm run dev",
+    "dev": "vite"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "concurrently": "^8.0.0"
+    "@nestjs/cli": "^11.0.7",
+    "@types/swagger-ui-express": "^4.1.8",
+    "concurrently": "^8.0.0",
+    "jsdoc": "^4.0.4"
+  },
+  "dependencies": {
+    "@nestjs/swagger": "^7.4.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "swagger-ui-express": "^5.0.1"
   }
 }

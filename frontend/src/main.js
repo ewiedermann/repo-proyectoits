@@ -1,53 +1,64 @@
-// frontend/src/main.js - CORREGIDO
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router';
-import { createPinia } from 'pinia';
-import { createAuth0 } from '@auth0/auth0-vue';
-import '@fortawesome/fontawesome-free/css/all.css';
+// frontend/src/main.js - Fix final para errores 401 y split
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import { createAuth0 } from '@auth0/auth0-vue'
+import './index.css'
 
-const app = createApp(App);
+const app = createApp(App)
 
-app.use(createPinia());
+// Variables de entorno para Auth0
+const domain = import.meta.env.VITE_AUTH0_DOMAIN
+const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID
 
-// Configuración de Auth0 CORREGIDA
-const authDomain = import.meta.env.VITE_AUTH0_DOMAIN;
-const authClientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
-const authAudience = import.meta.env.VITE_AUTH0_AUDIENCE;
+console.log('🔧 Configuración Auth0:')
+console.log('Domain:', domain)
+console.log('Client ID:', clientId)
 
-console.log('🔧 Configuración Auth0:');
-console.log('Domain:', authDomain);
-console.log('Client ID:', authClientId);
-console.log('Audience:', authAudience);
-
-// Verificar que las variables de entorno estén configuradas
-if (!authDomain || !authClientId) {
-  console.error('❌ Error: Variables de entorno de Auth0 no configuradas');
-  console.log('Asegúrate de tener VITE_AUTH0_DOMAIN y VITE_AUTH0_CLIENT_ID en tu archivo .env');
+// Validar variables de entorno
+if (!domain || !clientId) {
+  console.error('❌ Faltan variables de entorno de Auth0')
+  console.error('Asegúrate de tener VITE_AUTH0_DOMAIN y VITE_AUTH0_CLIENT_ID en tu .env')
 }
 
+// CONFIGURACIÓN SIMPLIFICADA PARA EVITAR ERRORES
 app.use(
   createAuth0({
-    domain: authDomain,
-    clientId: authClientId,
+    domain: domain,
+    clientId: clientId,
     authorizationParams: {
-      redirect_uri: `${window.location.origin}/callback`, // CORRECCIÓN: usar callback
-      audience: authAudience, // Tu API personalizada
+      redirect_uri: window.location.origin + '/callback',
+      // NO incluir audience para SPA simple
       scope: 'openid profile email'
     },
+    
+    // Configuración mínima para evitar errores
     cacheLocation: 'localstorage',
-    useRefreshTokens: true,
+    useRefreshTokens: false,
+    
+    // Configuración específica para desarrollo
+    ...(import.meta.env.DEV && {
+      httpTimeoutMs: 10000,
+    })
   })
-);
+)
 
-app.use(router);
+// Limpiar localStorage corrupto al inicio
+if (import.meta.env.DEV) {
+  try {
+    Object.keys(localStorage).forEach(key => {
+      if (key.includes('@@auth0spajs@@')) {
+        localStorage.removeItem(key);
+      }
+    });
+    console.log('🧹 localStorage de Auth0 limpiado');
+  } catch (error) {
+    console.warn('Error limpiando localStorage:', error);
+  }
+}
 
-// Manejo global de errores
-app.config.errorHandler = (err, vm, info) => {
-  console.error('❌ Error global:', err);
-  console.error('Información:', info);
-};
+app.use(router)
 
-app.mount('#app');
+app.mount('#app')
 
-console.log('🚀 Aplicación iniciada correctamente');
+console.log('🚀 Aplicación iniciada correctamente')

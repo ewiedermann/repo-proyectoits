@@ -1,14 +1,22 @@
-// backend/src/auth/auth0.service.ts
+// backend/src/auth/auth0.service.ts - Actualizado con funciones de registro
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+
+interface RegisterUserData {
+  email: string;
+  nombre: string;
+  edad: number;
+  autorizacionParental?: boolean;
+  emailTutor?: string;
+}
 
 @Injectable()
 export class Auth0Service {
   private domain: string;
   private clientId: string;
   private clientSecret: string;
-  private managementToken = ''; // ya no es nullable
+  private managementToken = '';
   private tokenExpiry: number = 0;
 
   constructor(private configService: ConfigService) {
@@ -27,6 +35,117 @@ export class Auth0Service {
       throw new Error(`Missing or invalid environment variable: ${key}`);
     }
     return value;
+  }
+
+  // Nuevo método para registrar usuario con Auth0 Management API
+  async registerUser(userData: RegisterUserData) {
+    try {
+      const token = await this.getManagementToken();
+      const { email, nombre, edad, autorizacionParental, emailTutor } = userData;
+
+      // Generar contraseña temporal (el usuario la cambiará en primer login)
+      const tempPassword = this.generateTempPassword();
+
+      const newUser = {
+        email,
+        password: tempPassword,
+        name: nombre,
+        connection: 'Username-Password-Authentication', // Conexión por defecto
+        user_metadata: {
+          edad,
+          ageGroup: this.getAgeGroup(edad),
+          autorizacionParental: edad < 14 ? autorizacionParental : undefined,
+          emailTutor: edad < 14 ? emailTutor : undefined,
+          registeredAt: new Date().toISOString(),
+          requiresSupervision: edad < 18
+        },
+        app_metadata: {
+          registrationMethod: 'dinosdev_app',
+          parentalConsent: edad < 14 ? autorizacionParental : true
+        }
+      };
+
+      console.log(`🔄 Creando usuario en Auth0: ${email}`);
+
+      const response = await axios.post(
+        `https://${this.domain}/api/v2/users`,
+        newUser,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      // Enviar email de verificación
+      try {
+        await this.sendVerificationEmail(response.data.user_id);
+      } catch (emailError) {
+        console.warn('⚠️ No se pudo enviar email de verificación:', emailError);
+      }
+
+      console.log(`✅ Usuario creado exitosamente: ${response.data.user_id}`);
+
+      return {
+        user_id: response.data.user_id,
+        email: response.data.email,
+        email_verified: response.data.email_verified,
+        created_at: response.data.created_at
+      };
+
+    } catch (error: any) {
+      console.error('❌ Error creando usuario:', error.response?.data || error.message);
+      
+      if (error.response?.status === 409) {
+        throw new HttpException('El email ya está registrado', HttpStatus.CONFLICT);
+      }
+      
+      if (error.response?.status === 400) {
+        throw new HttpException(
+          `Error en datos de registro: ${error.response.data?.message}`, 
+          HttpStatus.BAD_REQUEST
+        );
+      }
+      
+      throw new HttpException('Error creando usuario', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // Nuevo método para autenticar usuario (para login)
+  async authenticateUser(email: string, password: string) {
+    try {
+      const response = await axios.post(
+        `https://${this.domain}/oauth/token`,
+        {
+          grant_type: 'password',
+          username: email,
+          password: password,
+          audience: `https://${this.domain}/api/v2/`,
+          scope: 'openid profile email',
+          client_id: this.clientId,
+          client_secret: this.clientSecret,
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      return {
+        access_token: response.data.access_token,
+        token_type: response.data.token_type,
+        userId: response.data.sub || email // Fallback al email si no hay sub
+      };
+
+    } catch (error: any) {
+      console.error('❌ Error autenticando usuario:', error.response?.data || error.message);
+      
+      if (error.response?.status === 403 || error.response?.status === 401) {
+        throw new HttpException('Credenciales inválidas', HttpStatus.UNAUTHORIZED);
+      }
+      
+      throw new HttpException('Error de autenticación', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async getUserInfo(userId: string) {
@@ -51,6 +170,8 @@ export class Auth0Service {
         user_id: user.user_id || '',
         created_at: user.created_at || '',
         updated_at: user.updated_at || '',
+        user_metadata: user.user_metadata || {},
+        app_metadata: user.app_metadata || {}
       };
     } catch (error: any) {
       console.error('Error obteniendo usuario de Auth0:', error.response?.data || error.message);
@@ -61,6 +182,36 @@ export class Auth0Service {
         throw new HttpException('Token inválido', HttpStatus.UNAUTHORIZED);
       }
       throw new HttpException('Error interno', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // Método mejorado para enviar email de verificación
+  private async sendVerificationEmail(userId: string) {
+    try {
+      const token = await this.getManagementToken();
+      const frontendUrl = this.getEnvOrThrow('FRONTEND_URL');
+
+      const ticketData = {
+        user_id: userId,
+        result_url: `${frontendUrl}/juegos`,
+        ttl_sec: 432000, // 5 días
+      };
+
+      const response = await axios.post(
+        `https://${this.domain}/api/v2/tickets/email-verification`,
+        ticketData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error: any) {
+      console.error('Error enviando email de verificación:', error.response?.data || error.message);
+      throw error;
     }
   }
 
@@ -137,7 +288,7 @@ export class Auth0Service {
 
   private async getManagementToken(): Promise<string> {
     if (this.managementToken && Date.now() < this.tokenExpiry) {
-        return this.managementToken!;
+        return this.managementToken;
     }
 
     try {
@@ -174,5 +325,25 @@ export class Auth0Service {
       console.error('Error de conexión:', error.message);
       return false;
     }
+  }
+
+  // Método privado para generar contraseña temporal
+  private generateTempPassword(): string {
+    const length = 12;
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let password = '';
+    
+    for (let i = 0; i < length; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    
+    return password;
+  }
+
+  // Método privado para determinar grupo de edad
+  private getAgeGroup(edad: number): string {
+    if (edad < 14) return 'child';
+    if (edad < 18) return 'teenager';
+    return 'adult';
   }
 }

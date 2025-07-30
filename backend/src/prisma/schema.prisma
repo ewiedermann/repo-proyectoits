@@ -18,6 +18,7 @@ model Usuario {
   nombre      String
   email       String          @unique
   contraseña  String
+  edad        Int 
   puntajes    Puntaje[]
   desbloqueos Desbloqueo[]
 }

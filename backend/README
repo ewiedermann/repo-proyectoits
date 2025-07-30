@@ -1,0 +1,209 @@
+🦕 API Juegos de Dinosaurios
+API backend desarrollada con NestJS para una aplicación de juegos de dinosaurios con autenticación Auth0.
+🚀 Características
+
+✅ Autenticación con Auth0 JWT
+✅ Verificación obligatoria de email
+✅ Gestión de juegos y puntajes
+✅ Estadísticas de usuario
+✅ Documentación completa con Swagger
+✅ Base de datos MySQL con Prisma
+✅ Validación de datos
+✅ Manejo de errores
+✅ Rate limiting
+✅ CORS configurado
+
+📋 Requisitos previos
+
+Node.js 16+
+MySQL 8.0+
+Cuenta de Auth0 configurada
+
+🛠️ Instalación
+
+Clonar el repositorio
+bashgit clone <url-del-repo>
+cd backend
+
+Instalar dependencias
+bashnpm install
+
+Configurar variables de entorno
+bashcp .env.example .env
+# Editar .env con tus datos reales
+
+Configurar base de datos
+bash# Generar el cliente de Prisma
+npx prisma generate
+
+# Ejecutar migraciones
+npx prisma db push
+
+# (Opcional) Semilla inicial
+npx prisma db seed
+
+Iniciar el servidor
+bash# Desarrollo
+npm run start:dev
+
+# Producción
+npm run build
+npm run start:prod
+
+
+📚 Documentación API
+Una vez iniciado el servidor, la documentación completa está disponible en:
+🔗 http://localhost:4000/api/docs
+Endpoints principales:
+🔐 Autenticación (/api/auth)
+
+GET /test-connection - Probar conexión con Auth0
+POST /resend-verification - Reenviar email de verificación
+GET /check-verification - Verificar estado del email
+GET /user-profile - Obtener perfil de usuario
+POST /refresh-profile - Refrescar perfil desde Auth0
+
+🎮 Juegos (/api/juegos)
+
+GET / - Obtener lista de juegos disponibles
+POST /puntaje - Guardar puntaje de partida
+GET /mis-puntajes - Obtener puntajes del usuario
+GET /estadisticas - Obtener estadísticas generales
+
+🔒 Autenticación
+Esta API utiliza Auth0 para autenticación. Para usar endpoints protegidos:
+
+Obtén un token JWT desde tu frontend Auth0
+Incluye el token en el header: Authorization: Bearer <token>
+Algunos endpoints requieren email verificado
+
+Ejemplo de autenticación:
+javascriptconst response = await fetch('http://localhost:4000/api/juegos', {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+});
+🗄️ Base de datos
+El proyecto utiliza Prisma con MySQL. El esquema incluye:
+
+Usuario: Información básica del usuario
+Juego: Catálogo de juegos disponibles
+Puntaje: Puntuaciones de las partidas
+Dinosaurio: Información de dinosaurios desbloqueables
+Desbloqueo: Registro de dinosaurios desbloqueados
+
+Comandos útiles de Prisma:
+bash# Ver la base de datos
+npx prisma studio
+
+# Resetear la base de datos
+npx prisma db push --force-reset
+
+# Generar migraciones
+npx prisma migrate dev --name nombre_migracion
+🔧 Configuración de Auth0
+
+Crear una aplicación en Auth0
+Configurar como "Single Page Application"
+Agregar URLs permitidas:
+
+Allowed Callback URLs: http://localhost:5173
+Allowed Logout URLs: http://localhost:5173
+Allowed Web Origins: http://localhost:5173
+
+
+Crear una API en Auth0:
+
+Identifier: https://tu-api-identifier
+Signing Algorithm: RS256
+
+
+Configurar las variables en .env
+
+🧪 Testing
+bash# Tests unitarios
+npm run test
+
+# Tests de integración
+npm run test:e2e
+
+# Coverage
+npm run test:cov
+📝 Scripts disponibles
+bashnpm run start          # Iniciar en modo normal
+npm run start:dev      # Iniciar en modo desarrollo (watch)
+npm run start:debug    # Iniciar en modo debug
+npm run start:prod     # Iniciar en modo producción
+npm run build          # Compilar para producción
+npm run format         # Formatear código con Prettier
+npm run lint           # Verificar código con ESLint
+🔍 Estructura del proyecto
+backend/
+├── src/
+│   ├── auth/                 # Módulo de autenticación
+│   │   ├── auth.controller.ts
+│   │   ├── auth.module.ts
+│   │   ├── auth.strategy.ts
+│   │   ├── auth0.service.ts
+│   │   ├── email-verified.guard.ts
+│   │   └── jwt-auth.guard.ts
+│   ├── juegos/              # Módulo de juegos
+│   │   ├── juegos.controller.ts
+│   │   ├── juegos.module.ts
+│   │   └── juegos.service.ts
+│   ├── prisma/              # Configuración de Prisma
+│   │   ├── prisma.module.ts
+│   │   ├── prisma.service.ts
+│   │   └── schema.prisma
+│   ├── common/              # DTOs y utilidades
+│   │   ├── dto/
+│   │   ├── filters/
+│   │   └── interceptors/
+│   ├── app.module.ts        # Módulo principal
+│   └── main.ts             # Punto de entrada
+├── .env.example            # Variables de entorno de ejemplo
+├── package.json
+└── README.md
+🚨 Códigos de estado HTTP
+CódigoDescripción200Operación exitosa201Recurso creado400Datos inválidos401Token inválido o expirado403Sin permisos (email no verificado)404Recurso no encontrado429Demasiadas peticiones500Error interno del servidor
+🔧 Configuración de producción
+Para desplegar en producción:
+
+Variables de entorno:
+bashNODE_ENV=production
+PORT=4000
+DATABASE_URL=tu_url_de_bd_produccion
+# ... resto de variables
+
+Build y start:
+bashnpm run build
+npm run start:prod
+
+Configurar HTTPS (recomendado)
+Configurar variables CORS para tu dominio de producción
+
+🤝 Contribuir
+
+Fork el proyecto
+Crea una rama para tu feature (git checkout -b feature/nueva-funcionalidad)
+Commit tus cambios (git commit -m 'Agregar nueva funcionalidad')
+Push a la rama (git push origin feature/nueva-funcionalidad)
+Abre un Pull Request
+
+📄 Licencia
+Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para detalles.
+🆘 Soporte
+Si tienes problemas:
+
+Revisa la documentación de Swagger en /api/docs
+Verifica que todas las variables de entorno estén configuradas
+Revisa los logs del servidor
+Abre un issue en el repositorio
+
+🔗 Enlaces útiles
+
+NestJS Documentation
+Auth0 Documentation
+Prisma Documentation
+Swagger Documentation

@@ -1,10 +1,17 @@
-<!-- frontend/src/views/CallbackPage.vue -->
+<!-- frontend/src/views/CallbackPage.vue - Versión simplificada -->
 <template>
   <div class="callback-container">
     <div class="callback-content">
       <div class="loading-spinner"></div>
       <h2>{{ loadingMessage }}</h2>
       <p>{{ subMessage }}</p>
+      
+      <!-- Botón de emergencia -->
+      <div v-if="showEmergencyButton" class="emergency-section">
+        <button @click="emergencyRedirect" class="emergency-btn">
+          🏠 Volver al Inicio
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -12,52 +19,71 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 const { isAuthenticated, user, handleRedirectCallback } = useAuth0();
 
 const loadingMessage = ref('Procesando autenticación...');
 const subMessage = ref('Un momento por favor');
+const showEmergencyButton = ref(false);
+
+function emergencyRedirect() {
+  // Limpiar todo y volver al inicio
+  localStorage.clear();
+  sessionStorage.clear();
+  window.location.href = '/';
+}
 
 onMounted(async () => {
   try {
-    // Manejar el callback de Auth0
+    console.log('🔍 Iniciando callback...');
+    console.log('Query params:', route.query);
+
+    // Verificar si hay error en la URL
+    if (route.query.error) {
+      throw new Error(`Auth0 Error: ${route.query.error}`);
+    }
+
+    // Verificar parámetros básicos
+    if (!route.query.code) {
+      throw new Error('Código de autorización faltante');
+    }
+
+    loadingMessage.value = 'Verificando con Auth0...';
+    
+    // Intentar callback simple SIN parámetros adicionales
     await handleRedirectCallback();
     
-    // Esperar a que la autenticación se complete
-    setTimeout(() => {
-      if (isAuthenticated.value) {
-        loadingMessage.value = '¡Autenticación exitosa!';
-        
-        // Verificar si el email está verificado
-        if (user.value?.email_verified) {
-          subMessage.value = 'Redirigiendo a juegos...';
-          setTimeout(() => {
-            router.push('/juegos');
-          }, 1500);
-        } else {
-          subMessage.value = 'Redirigiendo para verificar email...';
-          setTimeout(() => {
-            router.push('/register-prompt');
-          }, 1500);
-        }
-      } else {
-        loadingMessage.value = 'Error en la autenticación';
-        subMessage.value = 'Redirigiendo al inicio...';
-        setTimeout(() => {
-          router.push('/');
-        }, 2000);
-      }
-    }, 1000);
+    console.log('✅ Callback exitoso');
+    
+    // Esperar a que se actualice el estado
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    if (isAuthenticated.value) {
+      loadingMessage.value = '¡Autenticación exitosa!';
+      
+      // Redirigir directamente a juegos (sin verificar email por ahora)
+      subMessage.value = 'Redirigiendo a juegos...';
+      setTimeout(() => {
+        router.replace('/juegos');
+      }, 1500);
+    } else {
+      throw new Error('No se pudo autenticar');
+    }
     
   } catch (error) {
-    console.error('Error en callback:', error);
+    console.error('❌ Error en callback:', error);
+    
     loadingMessage.value = 'Error en la autenticación';
-    subMessage.value = 'Redirigiendo al inicio...';
+    subMessage.value = 'No se pudo completar el proceso de login';
+    showEmergencyButton.value = true;
+    
+    // Auto-redirect después de 5 segundos
     setTimeout(() => {
-      router.push('/');
-    }, 2000);
+      emergencyRedirect();
+    }, 5000);
   }
 });
 </script>
@@ -76,7 +102,7 @@ onMounted(async () => {
 .callback-content {
   text-align: center;
   padding: 40px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
   border-radius: 15px;
   color: #fff;
   max-width: 500px;
@@ -105,6 +131,28 @@ p {
   font-size: 1rem;
   color: #e5e7eb;
   line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.emergency-section {
+  margin-top: 30px;
+}
+
+.emergency-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.emergency-btn:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  transform: translateY(-2px);
 }
 
 @keyframes spin {
