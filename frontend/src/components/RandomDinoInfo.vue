@@ -10,9 +10,23 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 export default {
   data() {
     return {
+=======
+/**
+ * Componente Vue para mostrar datos curiosos sobre dinosaurios.
+ * Los datos cambian automáticamente cada cierto tiempo.
+ */
+export default {
+  data() {
+    return {
+      /**
+       * Lista de datos curiosos sobre dinosaurios que se mostrarán rotativamente
+       * @type {string[]}
+       */
+>>>>>>> qa1
       datosCuriosos: [
         "🌍 Los dinosaurios vivieron en la Tierra durante más de 160 millones de años.",
         "🦕 El Argentinosaurus es el dinosaurio más grande descubierto, con hasta 40 metros de largo.",
@@ -34,22 +48,66 @@ export default {
         "🦖 El Compsognathus era uno de los dinosaurios más pequeños, con solo 60 cm de largo.",
         "📢 El Parasaurolophus tenía una cresta en la cabeza que usaba para emitir sonidos como una trompeta."
       ],
+<<<<<<< HEAD
       dataCurioso: "", // Muestra un dato a la vez
       index: 0, // Índice del dato actual
       intervalo: null // Guardará el intervalo para que los datos cambien automáticamente
     };
   },
   methods: {
+=======
+
+      /**
+       * Dato curioso actual que se muestra en pantalla
+       * @type {string}
+       */
+      dataCurioso: "", // Muestra un dato a la vez
+
+      /**
+       * Índice del dato actual en el arreglo datosCuriosos
+       * @type {number}
+       */
+      index: 0,
+
+      /**
+       * Identificador del intervalo para cambio automático de datos
+       * @type {number|null}
+       */
+      intervalo: null
+    };
+  },
+
+  methods: {
+    /**
+     * Cambia al siguiente dato curioso en la lista y reinicia desde el inicio si llega al final
+     */
+>>>>>>> qa1
     siguienteDato() {
       this.index = (this.index + 1) % this.datosCuriosos.length;
       this.dataCurioso = this.datosCuriosos[this.index];
     }
   },
+<<<<<<< HEAD
   mounted() {
     this.dataCurioso = this.datosCuriosos[this.index]; // Inicializa con el primer dato
     this.intervalo = setInterval(this.siguienteDato, 6000);
   },
   beforeUnmount() {
+=======
+
+  mounted() {
+    /**
+     * Inicializa el primer dato curioso y comienza el intervalo para cambiarlo automáticamente
+     */
+    this.dataCurioso = this.datosCuriosos[this.index]; // Inicializa con el primer dato
+    this.intervalo = setInterval(this.siguienteDato, 6000);
+  },
+
+  beforeUnmount() {
+    /**
+     * Limpia el intervalo cuando el componente se desmonta para evitar fugas de memoria
+     */
+>>>>>>> qa1
     clearInterval(this.intervalo);
   }
 };

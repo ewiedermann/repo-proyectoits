@@ -12,6 +12,27 @@
 </template>
 
 <script setup>
+<<<<<<< HEAD
+=======
+/**
+ * Propiedad que representa los datos de un dinosaurio.
+ * @typedef {Object} Dino
+ * @property {string} nombreComun - Nombre común del dinosaurio.
+ * @property {string} nombreCientifico - Nombre científico del dinosaurio.
+ * @property {string} image - URL de la imagen del dinosaurio.
+ * @property {string} tipoAlimentacion - Tipo de alimentación del dinosaurio.
+ * @property {string} periodo - Periodo histórico en el que vivió.
+ * @property {string} tamano - Tamaño aproximado del dinosaurio.
+ * @property {string} peso - Peso estimado del dinosaurio.
+ * @property {string} ubicacionGeografica - Ubicación geográfica donde fue encontrado.
+ * @property {string} curiosidades - Datos curiosos sobre el dinosaurio.
+ */
+
+/**
+ * Prop recibida desde el componente padre.
+ * @type {Dino}
+ */
+>>>>>>> qa1
 defineProps(['dino'])
 </script>
 

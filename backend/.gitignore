@@ -1,6 +1,11 @@
 # compiled output
+<<<<<<< HEAD
 node_modules/
 dist/
+=======
+/dist
+/node_modules
+>>>>>>> qa1
 /build
 
 # Logs
@@ -54,3 +59,11 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+<<<<<<< HEAD
+=======
+
+
+# Aseguramos ignorar todos los .env.* menos .env.example
+.env.*
+!.env.example
+>>>>>>> qa1

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // backend/src/main.ts - Versión actualizada con Swagger
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
@@ -6,10 +7,19 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import * as cors from 'cors';
+=======
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+
+>>>>>>> qa1
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+<<<<<<< HEAD
   // Configurar CORS
   app.use(cors({
     origin: [
@@ -93,3 +103,28 @@ async function bootstrap() {
 }
 
 bootstrap();
+=======
+ 
+
+  app.enableCors();
+  const configService = app.get(ConfigService);
+  const PORT = configService.get<number>('PORT') || 4000;
+
+ // Configuración de Swagger
+  const config = new DocumentBuilder()
+    .setTitle('API de DinosDevs')
+    .setDescription('Documentación de la API del proyecto DinosDves')
+    .setVersion('1.0')
+    .addBearerAuth()//para que aparezca el botón "Authorize" y brindar token
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document); // La ruta será /api
+
+
+
+  await app.listen(PORT);
+  console.log(`🚀Server running on http://localhost:${PORT}`);
+}
+bootstrap();
+>>>>>>> qa1

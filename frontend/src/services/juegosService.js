@@ -1,9 +1,34 @@
+<<<<<<< HEAD
 // src/services/juegosService.js
 
 import axios from 'axios';
 
 const API_URL = 'http://localhost:3000/juegos'; // URL de tu backend, cambia el puerto si es necesario
 
+=======
+/**
+ * @fileoverview Servicio para gestionar las peticiones HTTP relacionadas con los juegos.
+ * Incluye funciones para obtener todos los juegos y uno específico por ID.
+ *
+ * @module services/juegosService
+ */
+
+import axios from 'axios';
+
+/**
+ * URL base del endpoint de juegos en el backend.
+ * @type {string}
+ */
+const API_URL = 'http://localhost:3000/juegos'; // URL del backend cambiar puerto 4000
+
+/**
+ * Obtiene la lista de todos los juegos desde el backend.
+ * Requiere un token de autenticación en el encabezado.
+ *
+ * @returns {Promise<any>} Datos de respuesta del servidor (lista de juegos).
+ * @throws {Error} Si ocurre un error durante la solicitud.
+ */
+>>>>>>> qa1
 export const getJuegos = async () => {
   try {
     const response = await axios.get(API_URL, {
@@ -18,6 +43,17 @@ export const getJuegos = async () => {
   }
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * Obtiene un juego específico por su ID desde el backend.
+ * Requiere un token de autenticación en el encabezado.
+ *
+ * @param {string|number} id - Identificador único del juego.
+ * @returns {Promise<any>} Datos de respuesta del servidor (información del juego).
+ * @throws {Error} Si ocurre un error durante la solicitud.
+ */
+>>>>>>> qa1
 export const getJuegoById = async (id) => {
   try {
     const response = await axios.get(`${API_URL}/${id}`, {

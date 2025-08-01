@@ -1,12 +1,20 @@
 @import './base.css';
 
 #app {
+<<<<<<< HEAD
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 0;
   font-weight: normal;
   display: block;
+=======
+  
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+>>>>>>> qa1
 }
 
 a,
@@ -23,4 +31,20 @@ a,
   }
 }
 
+<<<<<<< HEAD
 /* Removido el media query que causaba problemas de layout */
+=======
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+}
+
+>>>>>>> qa1

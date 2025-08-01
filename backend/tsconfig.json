@@ -9,9 +9,13 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
+<<<<<<< HEAD
     "strict": true,
     "exactOptionalPropertyTypes": false,
     "baseUrl": "./",
+=======
+    "baseUrl": "./", // Esto indica la raíz de tu proyecto
+>>>>>>> qa1
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -20,7 +24,14 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+<<<<<<< HEAD
       "@prisma/*": ["src/prisma/*"]
     }
   }
 }
+=======
+      "@prisma/*": ["src/prisma/*"] // Aquí definimos el alias
+    }
+  }
+}
+>>>>>>> qa1

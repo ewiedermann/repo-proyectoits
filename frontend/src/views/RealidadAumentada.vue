@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 
 
 <script>
 
 </script>
+=======
+>>>>>>> qa1
 <template>
   <div class="ar-description">
     <h2>Realidad Aumentada - Dinosaurios</h2>
@@ -14,6 +17,26 @@
   </div>
 </template>
 
+<<<<<<< HEAD
+=======
+<script>
+/**
+ * @fileoverview Vista que muestra una descripción introductoria sobre la funcionalidad de Realidad Aumentada del juego.
+ * Futuramente puede incluir integración con librerías de RA para mostrar modelos 3D de dinosaurios.
+ *
+ * @module views/RealidadAumentada
+ */
+
+export default {
+  /**
+   * Nombre del componente
+   * @type {string}
+   */
+  name: 'RealidadAumentada',
+};
+</script>
+
+>>>>>>> qa1
 <style scoped>
 .ar-description {
   background-color: #2e4d3d;
@@ -23,7 +46,10 @@
   text-align: center;
   margin-bottom: 30px;
   margin: 0 auto;
+<<<<<<< HEAD
 
+=======
+>>>>>>> qa1
 }
 
 h2 {

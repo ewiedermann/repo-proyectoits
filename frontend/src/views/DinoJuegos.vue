@@ -1,13 +1,23 @@
 <template>
   <div class="juegos-container">
     <div class="botones-superiores">
+<<<<<<< HEAD
       <button v-if="vistaActual === 'memoria'" @click="volverAJuegos">
         <i class="fas fa-arrow-left"></i> Volver a Juegos
       </button>
+=======
+      <!--       Habilitar cuando funcione
+      <button @click="verRanking">Ranking</button>
+      <button @click="verCarrito">
+        <i class="fas fa-shopping-cart"></i> Carrito
+      </button>
+ -->
+>>>>>>> qa1
       <button @click="cerrarSesion">
         <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
       </button>
     </div>
+<<<<<<< HEAD
 
     <!-- Vista principal de juegos -->
     <div v-if="vistaActual === 'juegos'" class="vista-juegos">
@@ -330,6 +340,155 @@ onUnmounted(() => {
   margin: 0;
   min-height: 100vh;
   box-sizing: border-box;
+=======
+     <h1>
+        <i class="fas fa-gamepad"></i>
+        Dino Juegos
+      </h1>
+      <p class="subtitulo">¡Explora y juega con los dinosaurios!</p>
+
+    <div class="juegos-grid">
+      <div class="juego-item" @click="seleccionarJuego('memoria')">
+        <i class="fas fa-brain"></i>
+        <h3>Juego de Memoria</h3>
+        <small>Encuentra las parejas en el menor tiempo posible</small>
+      </div>
+      <div class="juego-item" @click="seleccionarJuego('sopa')">
+        <i class="fas fa-running"></i>
+        <h3>Carrera Dino</h3>
+        <small>Esquiva los obstaculos que mas puedas</small>
+
+      </div>
+      <div class="juego-item" @click="seleccionarJuego('rompecabezas')">
+        <i class="fas fa-puzzle-piece"></i>
+        <h3>Rompecabezas</h3>
+        <small class="proximamente">Próximamente</small>
+      </div>
+      <div class="juego-item" @click="seleccionarJuego('pasapalabra')">
+        <i class="fas fa-font"></i>
+        <h3>Pasa Palabra</h3>
+        <small>Próximamente</small>
+        </div>
+
+      </div>
+ </div>
+
+</template>
+
+
+<script>
+/**
+ * @fileoverview Vista que muestra una lista de juegos disponibles relacionados con dinosaurios.
+ * Permite navegar a cada juego o cerrar sesión.
+ *
+ * @module views/DinoJuegos
+ */
+
+import { useUserStore } from '@/stores/userStore';
+import { useRouter } from 'vue-router';
+
+
+export default {
+  /**
+   * Configuración del componente Vue
+   */
+  setup() {
+    const userStore = useUserStore();
+    const router = useRouter();
+
+    /**
+     * Cierra la sesión del usuario y redirige al inicio
+     */
+    const cerrarSesion = () => {
+      userStore.logout();
+      router.push('/'); // Redirige al Home después de cerrar sesión
+    };
+
+    return { cerrarSesion };
+  },
+  methods: {
+    /**
+     * Navega al juego seleccionado según su identificador
+     *
+     * @param {string} juego - Identificador del juego ('memoria', 'sopa', etc.)
+     */
+    seleccionarJuego(juego) {
+      if (juego === 'memoria') {
+        this.$router.push('/memory-game');
+      } else if (juego === 'sopa') {
+        this.$router.push('/sopa-de-letras');
+      } else {
+        console.log(`Juego seleccionado: ${juego}`);
+      }
+    },
+
+    /**
+     * Muestra el ranking de usuarios (pendiente de implementación)
+     */
+    verRanking() {
+      console.log('Ver ranking');
+    },
+
+    /**
+     * Muestra el carrito de compras (pendiente de implementación)
+     */
+    verCarrito() {
+      console.log('Ver carrito');
+    },
+  },
+
+};
+</script>
+
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap ');
+
+h1{
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.8rem;
+
+}
+.subtitulo{
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+h3{
+  color: #f0ead2;
+}
+
+small{
+  color: rgb(243, 243, 172);
+}
+
+
+.fa-gamepad { /*icono de joystick*/
+    color: #4a7a5b;
+  animation: zoom 1.5s ease-in-out infinite;
+}
+
+@keyframes zoom { /*animacin para el icono */
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.juegos-container {
+  background-color: #2e4d3d;
+  color: #f0ead2;
+  padding: 20px;
+  font-family: 'Georgia', serif;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 100vh;
+    box-sizing: border-box;
+>>>>>>> qa1
 }
 
 .botones-superiores {
@@ -337,7 +496,10 @@ onUnmounted(() => {
   justify-content: flex-end;
   margin-bottom: 10px;
   gap: 10px;
+<<<<<<< HEAD
   flex-wrap: wrap;
+=======
+>>>>>>> qa1
 }
 
 button {
@@ -350,13 +512,17 @@ button {
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s;
+<<<<<<< HEAD
   white-space: nowrap;
+=======
+>>>>>>> qa1
 }
 
 button:hover {
   background-color: #5b8e6b;
 }
 
+<<<<<<< HEAD
 /* Estilos de la vista principal */
 .vista-juegos {
   max-width: 1000px;
@@ -398,23 +564,42 @@ button:hover {
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+=======
+.juegos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 16px;
+>>>>>>> qa1
 }
 
 .juego-item {
   background: linear-gradient(135deg, #4a7a5b, #5c8a70);
+<<<<<<< HEAD
   color: #f0ead2;
   padding: 30px 20px;
   border-radius: 15px;
+=======
+  color: #033b26;
+  padding: 20px;
+  border-radius: 10px;
+>>>>>>> qa1
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   font-family: 'Raleway', sans-serif;
+<<<<<<< HEAD
+=======
+  font-size: 1.2rem;
+  font-weight: bold;
+>>>>>>> qa1
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.3s;
   position: relative;
   overflow: hidden;
+<<<<<<< HEAD
   min-height: 150px;
   width: 100%;
   box-sizing: border-box;
@@ -438,6 +623,15 @@ button:hover {
   color: #bba76d;
   font-style: italic;
 }
+=======
+
+}
+
+.juego-item i {
+  font-size: 2rem;
+  margin-bottom: 8px;
+color: #f0ead2;}
+>>>>>>> qa1
 
 .juego-item:before {
   content: '';
@@ -462,6 +656,7 @@ button:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
+<<<<<<< HEAD
 /* Estilos del wrapper del Memory Game */
 .memory-game-wrapper {
   position: relative;
@@ -708,10 +903,25 @@ button:hover {
   
   .game-over-content p {
     font-size: 1.1rem;
+=======
+@media (max-width: 768px) {
+  .juegos-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .juego-item {
+    font-size: 1rem;
+    padding: 15px;
+  }
+
+  .juego-item i {
+    font-size: 1.5rem;
+>>>>>>> qa1
   }
 }
 
 @media (max-width: 480px) {
+<<<<<<< HEAD
   .juegos-container {
     padding: 0.5rem 0.125rem;
   }
@@ -833,3 +1043,20 @@ button:hover {
   }
 }
 </style>
+=======
+  .juegos-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .juego-item {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  .juego-item i {
+    font-size: 1.3rem;
+  }
+}
+</style>
+
+>>>>>>> qa1

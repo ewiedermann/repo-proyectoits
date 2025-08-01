@@ -50,16 +50,59 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+=======
+/**
+ * @fileoverview Vista que muestra información general sobre los dinosaurios,
+ * incluyendo una línea de tiempo y un carrusel interactivo de especies.
+ *
+ * @module views/DinoInformacion
+ */
+
+>>>>>>> qa1
 import DinoCard from "@/components/DinoCard.vue";
 import RandomDinoInfo from "@/components/RandomDinoInfo.vue";
 import dinosaurios from "@/data/dinosaurios.json";
 
 export default {
+<<<<<<< HEAD
   components: { DinoCard, RandomDinoInfo },
   data() {
     return {
       dinosaurios,
       currentIndex: 0,
+=======
+  /**
+   * Nombre del componente
+   * @type {string}
+   */
+  name: "DinoInformacion",
+
+  /**
+   * Componentes hijos utilizados en esta vista
+   * @type {Object}
+   */
+  components: { DinoCard, RandomDinoInfo },
+
+  data() {
+    return {
+      /**
+       * Lista de dinosaurios obtenida desde un archivo JSON
+       * @type {Array<{nombreCientifico: string, nombreComun: string, tipoAlimentacion: string, periodo: string, tamano: string, peso: string, ubicacionGeografica: string, curiosidades: string, image: string}>}
+       */
+      dinosaurios,
+
+      /**
+       * Índice actual del carrusel para mostrar una especie a la vez
+       * @type {number}
+       */
+      currentIndex: 0,
+
+      /**
+       * Datos para la línea del tiempo geológica de los dinosaurios
+       * @type {Array<{nombre: string, duracion: string, descripcion: string}>}
+       */
+>>>>>>> qa1
       timelineData: [
         {
           nombre: 'TRIÁSICO',
@@ -84,6 +127,7 @@ export default {
       ]
     };
   },
+<<<<<<< HEAD
   methods: {
     nextSlide() {
       this.currentIndex = (this.currentIndex + 1) % this.dinosaurios.length;
@@ -92,6 +136,24 @@ export default {
       this.currentIndex = (this.currentIndex - 1 + this.dinosaurios.length) % this.dinosaurios.length;
     }
   },
+=======
+
+  methods: {
+    /**
+     * Mueve el carrusel al siguiente dinosaurio
+     */
+    nextSlide() {
+      this.currentIndex = (this.currentIndex + 1) % this.dinosaurios.length;
+    },
+
+    /**
+     * Mueve el carrusel al dinosaurio anterior
+     */
+    prevSlide() {
+      this.currentIndex = (this.currentIndex - 1 + this.dinosaurios.length) % this.dinosaurios.length;
+    }
+  }
+>>>>>>> qa1
 };
 </script>
 
